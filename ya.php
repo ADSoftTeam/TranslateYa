@@ -1,9 +1,12 @@
 <?php
 require_once 'simple_html_dom.php';
-$url = "https://yandex.ru/search/?lr=20016&msid=1508325721.1612.22876.23228&text=%D0%B0%D0%B0%D0%B0";
+$text = isset($_GET['text']) ? urlencode($_GET['text']) : "пример";
+//echo $text;
+$url = "https://yandex.ru/search/?text=$text";
 
 function translate($text) {
 	$api_key = "trnsl.1.1.20171018T120429Z.f4d8a10bddc90d58.7f0c34c244c682c6c5ec2ac3d9a90ac65ed699ab";	
+	$api_key = "trnsl.1.1.20171018T135335Z.42c5b12eb6f0a1ac.2f98fddb1aa3d463f312399f5ad79a10602707b0";
 	$api_url = "https://translate.yandex.net/api/v1.5/tr.json/translate?lang=ru-en&key=$api_key&format=html";
 	$ch = curl_init($api_url);  
     //curl_setopt($ch, CURLOPT_HEADER, 0);  
@@ -24,7 +27,7 @@ if ($html->load($cont)) {
 	foreach ($html->find('.main__content ul[role=main]>li') AS $item) {
 		$tmp = "";
 		if (mb_strlen($item)>=10000) {
-			// Похоже это список видео 9возможно картинок)
+			// Похоже это список видео (возможно картинок)
 			// В цикле переводим все для каждого элемента списка - заменяя оригинал			
 			foreach ($item->find(".scroller__item") AS $subitem) {
 				$w = translate($subitem->innertext);
